@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 19, 2023 at 06:04 PM
+-- Generation Time: Mar 20, 2023 at 06:21 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -46,43 +46,24 @@ INSERT INTO `customer` (`cus_ID`, `cus_name`, `cus_table`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `drink`
+-- Table structure for table `food_drink`
 --
 
-CREATE TABLE `drink` (
-  `D_ID` char(6) NOT NULL,
-  `D_Name` varchar(30) NOT NULL,
-  `D_Price` int(4) NOT NULL,
-  `menu_ID` char(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `drink`
---
-
-INSERT INTO `drink` (`D_ID`, `D_Name`, `D_Price`, `menu_ID`) VALUES
-('D01', 'มะนาวโซดา', 40, '002'),
-('D02', 'นมชมพู', 40, '002'),
-('D03', 'ชาไทย', 40, '002');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `food`
---
-
-CREATE TABLE `food` (
-  `F_ID` char(6) NOT NULL,
+CREATE TABLE `food_drink` (
+  `F_D_ID` char(6) NOT NULL,
   `F_Name` varchar(30) NOT NULL,
   `F_price` int(4) NOT NULL,
   `menu_ID` char(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `food`
+-- Dumping data for table `food_drink`
 --
 
-INSERT INTO `food` (`F_ID`, `F_Name`, `F_price`, `menu_ID`) VALUES
+INSERT INTO `food_drink` (`F_D_ID`, `F_Name`, `F_price`, `menu_ID`) VALUES
+('D01', 'มะนาวโซดา', 40, '002'),
+('D02', 'นมชมพูเย็น', 40, '002'),
+('D03', 'ชาไทย', 40, '002'),
 ('F01', 'เตี๋ยวแห้ง', 45, '001'),
 ('F02', 'เตี๋ยวต้มส้ม', 45, '001'),
 ('F03', 'ผัดซีอิ้วหมู', 50, '001');
@@ -109,47 +90,6 @@ INSERT INTO `menu` (`menu_ID`, `menu_Name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orderd_detail`
---
-
-CREATE TABLE `orderd_detail` (
-  `order_ID` char(6) NOT NULL,
-  `D_ID` char(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `orderd_detail`
---
-
-INSERT INTO `orderd_detail` (`order_ID`, `D_ID`) VALUES
-('000192', 'D01'),
-('000192', 'D02'),
-('000001', 'D03');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `orderf_detail`
---
-
-CREATE TABLE `orderf_detail` (
-  `order_ID` char(6) NOT NULL,
-  `F_ID` char(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `orderf_detail`
---
-
-INSERT INTO `orderf_detail` (`order_ID`, `F_ID`) VALUES
-('000192', 'F01'),
-('000192', 'F02'),
-('000192', 'F03'),
-('000001', 'F03');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `orders`
 --
 
@@ -168,6 +108,30 @@ INSERT INTO `orders` (`order_ID`, `cus_ID`, `order_Date`, `order_Time`) VALUES
 ('000001', 'CT 2', '2021-10-27', '09:09:00'),
 ('000192', 'CT 1', '2023-03-12', '00:00:00');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_detail`
+--
+
+CREATE TABLE `order_detail` (
+  `order_ID` char(6) NOT NULL,
+  `F_D_ID` char(6) NOT NULL,
+  `Quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `order_detail`
+--
+
+INSERT INTO `order_detail` (`order_ID`, `F_D_ID`, `Quantity`) VALUES
+('000192', 'F01', 1),
+('000192', 'F02', 1),
+('000192', 'F03', 1),
+('000001', 'F03', 1),
+('000192', 'D01', 1),
+('000192', 'D02', 1);
+
 --
 -- Indexes for dumped tables
 --
@@ -179,17 +143,10 @@ ALTER TABLE `customer`
   ADD PRIMARY KEY (`cus_ID`);
 
 --
--- Indexes for table `drink`
+-- Indexes for table `food_drink`
 --
-ALTER TABLE `drink`
-  ADD PRIMARY KEY (`D_ID`),
-  ADD KEY `menu_ID` (`menu_ID`);
-
---
--- Indexes for table `food`
---
-ALTER TABLE `food`
-  ADD PRIMARY KEY (`F_ID`),
+ALTER TABLE `food_drink`
+  ADD PRIMARY KEY (`F_D_ID`),
   ADD KEY `menu_ID` (`menu_ID`);
 
 --
@@ -199,20 +156,6 @@ ALTER TABLE `menu`
   ADD PRIMARY KEY (`menu_ID`);
 
 --
--- Indexes for table `orderd_detail`
---
-ALTER TABLE `orderd_detail`
-  ADD KEY `D_ID` (`D_ID`),
-  ADD KEY `order_ID` (`order_ID`);
-
---
--- Indexes for table `orderf_detail`
---
-ALTER TABLE `orderf_detail`
-  ADD KEY `F_ID` (`F_ID`),
-  ADD KEY `order_ID` (`order_ID`);
-
---
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
@@ -220,40 +163,34 @@ ALTER TABLE `orders`
   ADD KEY `cus_ID` (`cus_ID`);
 
 --
+-- Indexes for table `order_detail`
+--
+ALTER TABLE `order_detail`
+  ADD KEY `F_ID` (`F_D_ID`),
+  ADD KEY `order_ID` (`order_ID`);
+
+--
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `drink`
+-- Constraints for table `food_drink`
 --
-ALTER TABLE `drink`
-  ADD CONSTRAINT `drink_ibfk_1` FOREIGN KEY (`menu_ID`) REFERENCES `menu` (`menu_ID`);
-
---
--- Constraints for table `food`
---
-ALTER TABLE `food`
-  ADD CONSTRAINT `food_ibfk_1` FOREIGN KEY (`menu_ID`) REFERENCES `menu` (`menu_ID`);
-
---
--- Constraints for table `orderd_detail`
---
-ALTER TABLE `orderd_detail`
-  ADD CONSTRAINT `orderd_detail_ibfk_1` FOREIGN KEY (`D_ID`) REFERENCES `drink` (`D_ID`),
-  ADD CONSTRAINT `orderd_detail_ibfk_2` FOREIGN KEY (`order_ID`) REFERENCES `orders` (`order_ID`);
-
---
--- Constraints for table `orderf_detail`
---
-ALTER TABLE `orderf_detail`
-  ADD CONSTRAINT `orderf_detail_ibfk_1` FOREIGN KEY (`F_ID`) REFERENCES `food` (`F_ID`),
-  ADD CONSTRAINT `orderf_detail_ibfk_2` FOREIGN KEY (`order_ID`) REFERENCES `orders` (`order_ID`);
+ALTER TABLE `food_drink`
+  ADD CONSTRAINT `food_drink_ibfk_1` FOREIGN KEY (`menu_ID`) REFERENCES `menu` (`menu_ID`);
 
 --
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`cus_ID`) REFERENCES `customer` (`cus_ID`);
+
+--
+-- Constraints for table `order_detail`
+--
+ALTER TABLE `order_detail`
+  ADD CONSTRAINT `order_detail_ibfk_1` FOREIGN KEY (`F_D_ID`) REFERENCES `food_drink` (`F_D_ID`),
+  ADD CONSTRAINT `order_detail_ibfk_2` FOREIGN KEY (`order_ID`) REFERENCES `orders` (`order_ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
